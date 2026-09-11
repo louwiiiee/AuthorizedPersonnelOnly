@@ -6,62 +6,78 @@
 
   <title>Birthday Surprise 🎂</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+  <!-- MindAR -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
 
+  <style>
     body {
       margin: 0;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    #start {
+      position: fixed;
+      inset: 0;
+      z-index: 10;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      color: white;
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
-      font-family: Arial, sans-serif;
       text-align: center;
-      overflow: hidden;
+      cursor: pointer;
+    }
+
+    #start h1 {
+      font-size: 70px;
+      margin: 10px;
+    }
+
+    #start p {
+      font-size: 22px;
+    }
+
+    #message {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: white;
+      text-align: center;
+      pointer-events: none;
+      background: rgba(0,0,0,0.15);
     }
 
     #countdown {
       font-size: 35vw;
       font-weight: bold;
-      color: white;
-      text-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      text-shadow: 0 5px 20px rgba(0,0,0,0.4);
     }
 
     #birthday {
       display: none;
-      color: white;
-      animation: pop 0.8s ease;
     }
 
     #birthday h1 {
-      font-size: 12vw;
+      font-size: 11vw;
       margin: 0;
     }
 
     #birthday p {
-      font-size: 6vw;
+      font-size: 5vw;
     }
 
     .confetti {
       position: fixed;
-      top: -20px;
+      top: -30px;
       font-size: 30px;
       animation: fall 3s linear forwards;
-    }
-
-    @keyframes pop {
-      0% {
-        transform: scale(0);
-      }
-      70% {
-        transform: scale(1.2);
-      }
-      100% {
-        transform: scale(1);
-      }
     }
 
     @keyframes fall {
@@ -74,50 +90,136 @@
 
 <body>
 
-  <div id="countdown">10</div>
+  <!-- User must tap first so the browser allows audio -->
+  <div id="start">
+    <h1>🎂</h1>
+    <p><strong>Birthday Surprise</strong></p>
+    <p>Tap to open the camera 👆</p>
+  </div>
 
-  <div id="birthday">
-    <h1>🎉 HAPPY BIRTHDAY! 🎉</h1>
-    <p>🎂 Have an amazing day! 🎈</p>
+  <!-- Countdown / birthday message -->
+  <div id="message">
+
+    <div id="countdown">10</div>
+
+    <div id="birthday">
+      <h1>🎉 HAPPY BIRTHDAY! 🎉</h1>
+      <p>🎂 Have an amazing day! 🎈</p>
+    </div>
+
   </div>
 
   <audio id="song" src="birthday.mp3"></audio>
 
-  <script>
+  <script type="module">
 
-    let number = 10;
-
+    const startScreen = document.getElementById("start");
+    const message = document.getElementById("message");
     const countdown = document.getElementById("countdown");
     const birthday = document.getElementById("birthday");
     const song = document.getElementById("song");
 
-    const timer = setInterval(() => {
+    let surpriseStarted = false;
 
-      number--;
+    startScreen.addEventListener("click", async () => {
 
-      if (number > 0) {
-        countdown.textContent = number;
-      }
+      startScreen.style.display = "none";
 
-      else {
-        clearInterval(timer);
+      // Start camera
+      const mindarThree = new MindAR.IMAGE.MindARThree({
+        container: document.body,
 
-        countdown.style.display = "none";
-        birthday.style.display = "block";
+        imageTargetSrc: "./targets.mind",
 
-        song.play().catch(() => {
-          console.log("Tap the screen to play the song.");
-        });
+        maxTrack: 1
+      });
 
-        createConfetti();
-      }
+      const { renderer, scene, camera } = mindarThree;
 
-    }, 1000);
+      // Create an invisible AR anchor
+      const anchor = mindarThree.addAnchor(0);
+
+      anchor.onTargetFound = () => {
+
+        if (!surpriseStarted) {
+
+          surpriseStarted = true;
+
+          startCountdown();
+
+        }
+
+      };
+
+      await mindarThree.start();
+
+      renderer.setAnimationLoop(() => {
+
+        renderer.render(scene, camera);
+
+      });
+
+    });
+
+
+    function startCountdown() {
+
+      message.style.display = "flex";
+
+      let number = 10;
+
+      countdown.textContent = number;
+
+      const timer = setInterval(() => {
+
+        number--;
+
+        if (number > 0) {
+
+          countdown.textContent = number;
+
+        } else {
+
+          clearInterval(timer);
+
+          countdown.style.display = "none";
+
+          birthday.style.display = "block";
+
+          playSong();
+
+          createConfetti();
+
+        }
+
+      }, 1000);
+
+    }
+
+
+    function playSong() {
+
+      song.currentTime = 0;
+
+      song.play().catch(error => {
+
+        console.log("Audio could not start:", error);
+
+      });
+
+    }
 
 
     function createConfetti() {
 
-      const emojis = ["🎉", "🎈", "✨", "🎊", "🥳", "🎂"];
+      const emojis = [
+        "🎉",
+        "🎈",
+        "✨",
+        "🎊",
+        "🥳",
+        "🎂"
+      ];
 
       for (let i = 0; i < 60; i++) {
 
@@ -135,7 +237,9 @@
           Math.random() * 2 + "s";
 
         document.body.appendChild(confetti);
+
       }
+
     }
 
   </script>
