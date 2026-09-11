@@ -14,26 +14,25 @@
 
   <style>
 
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
       overflow: hidden;
-      background: #061a40;
       font-family: Arial, sans-serif;
+      background: #061a40;
     }
-
-
-    /* =========================
-       START SCREEN
-       ========================= */
 
     #start {
       position: fixed;
-      z-index: 9999;
       inset: 0;
+      z-index: 9999;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      text-align: center;
+      color: white;
 
       background:
         linear-gradient(
@@ -42,55 +41,22 @@
           #0077b6
         );
 
-      color: white;
-
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-
-      text-align: center;
-
       cursor: pointer;
     }
 
-
     #start h1 {
       font-size: 70px;
-      margin: 0 0 20px 0;
+      margin: 0 0 20px;
     }
-
 
     #start p {
       font-size: 22px;
-      margin: 8px;
     }
-
-
-    #start .hint {
-      margin-top: 30px;
-      padding: 15px 25px;
-
-      border: 2px solid rgba(255,255,255,0.6);
-      border-radius: 50px;
-
-      background: rgba(255,255,255,0.12);
-
-      font-size: 18px;
-    }
-
-
-    /* =========================
-       COUNTDOWN
-       ========================= */
 
     #countdown {
-
       position: fixed;
-
-      z-index: 5000;
-
       inset: 0;
+      z-index: 5000;
 
       display: none;
 
@@ -98,63 +64,41 @@
       align-items: center;
 
       color: white;
-
       font-size: 45vw;
-
       font-weight: bold;
 
-      text-shadow:
-        0 5px 20px rgba(0,0,0,0.5);
+      background: rgba(0,60,130,.4);
 
-      pointer-events: none;
-
-      background:
-        rgba(0, 60, 130, 0.35);
+      text-shadow: 0 5px 20px rgba(0,0,0,.5);
     }
 
-
-    /* =========================
-       BIRTHDAY SCREEN
-       ========================= */
-
     #birthday {
-
       position: fixed;
-
-      z-index: 5000;
-
       inset: 0;
+      z-index: 5000;
 
       display: none;
 
+      flex-direction: column;
       justify-content: center;
       align-items: center;
 
-      flex-direction: column;
-
-      color: white;
-
       text-align: center;
+      color: white;
 
       padding: 20px;
 
       background:
         linear-gradient(
           135deg,
-          rgba(6,26,64,0.90),
-          rgba(0,119,182,0.90)
+          rgba(6,26,64,.95),
+          rgba(0,119,182,.95)
         );
-
-      animation: birthdayPop 0.8s ease;
     }
 
-
     #birthday img {
-
       width: 60vw;
-
       max-width: 350px;
-
       max-height: 35vh;
 
       object-fit: contain;
@@ -164,80 +108,30 @@
       margin-bottom: 20px;
 
       box-shadow:
-        0 10px 40px rgba(0,0,0,0.4);
+        0 10px 40px rgba(0,0,0,.4);
     }
 
-
     #birthday h1 {
-
       font-size: 11vw;
-
-      line-height: 1.1;
-
       margin: 0;
     }
 
-
     #birthday p {
-
       font-size: 5vw;
-
-      margin-top: 20px;
     }
 
-
-    /* =========================
-       CONFETTI
-       ========================= */
-
     .confetti {
-
       position: fixed;
-
       top: -40px;
-
       z-index: 10000;
 
       font-size: 30px;
-
-      pointer-events: none;
 
       animation:
         fall 4s linear forwards;
     }
 
-
-    /* =========================
-       ANIMATIONS
-       ========================= */
-
-    @keyframes birthdayPop {
-
-      0% {
-        transform: scale(0);
-        opacity: 0;
-      }
-
-      70% {
-        transform: scale(1.08);
-        opacity: 1;
-      }
-
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-
-    }
-
-
     @keyframes fall {
-
-      from {
-        transform:
-          translateY(0)
-          rotate(0deg);
-      }
 
       to {
         transform:
@@ -251,186 +145,141 @@
 
 </head>
 
-
 <body>
 
 
-  <!-- =========================
-       START SCREEN
-       ========================= -->
+<!-- START SCREEN -->
 
-  <div id="start">
+<div id="start">
 
-    <h1>🎂</h1>
+  <h1>🎂</h1>
 
-    <p>
-      <strong>Birthday Surprise</strong>
-    </p>
+  <p>
+    <strong>Birthday Surprise</strong>
+  </p>
 
-    <p>
-      Something special is waiting...
-    </p>
+  <p>
+    Tap to start the surprise 👆
+  </p>
 
-    <div class="hint">
-      👆 Tap to open the camera
-    </div>
-
-  </div>
+</div>
 
 
+<!-- COUNTDOWN -->
 
-  <!-- =========================
-       COUNTDOWN
-       ========================= -->
-
-  <div id="countdown">
-
-    10
-
-  </div>
+<div id="countdown">
+  10
+</div>
 
 
+<!-- BIRTHDAY -->
 
-  <!-- =========================
-       BIRTHDAY MESSAGE
-       ========================= -->
+<div id="birthday">
 
-  <div id="birthday">
-
-    <img
-      src="fts.jpg"
-      alt="Birthday photo"
-    >
-
-    <h1>
-      🎉 HAPPY BIRTHDAY! 🎉
-    </h1>
-
-    <p>
-      🎂 Have an amazing day! 🎈
-    </p>
-
-  </div>
-
-
-
-  <!-- =========================
-       BIRTHDAY SONG
-       ========================= -->
-
-  <audio
-    id="song"
-    src="birthday.mp3"
-    preload="auto">
-  </audio>
-
-
-
-  <!-- =========================
-       AR CAMERA
-       ========================= -->
-
-  <a-scene
-
-    mindar-image="
-      imageTargetSrc: ./targets.mind;
-      maxTrack: 1;
-    "
-
-    color-space="sRGB"
-
-    renderer="
-      colorManagement: true;
-      physicallyCorrectLights;
-    "
-
-    vr-mode-ui="enabled: false"
-
-    device-orientation-permission-ui="
-      enabled: false
-    "
-
+  <img
+    src="fts.jpg"
+    alt="Birthday photo"
   >
 
+  <h1>
+    🎉 HAPPY BIRTHDAY! 🎉
+  </h1>
 
-    <!-- Camera -->
+  <p>
+    🎂 Have an amazing day! 🎈
+  </p>
 
-    <a-camera
-      position="0 0 0"
-      look-controls="enabled: false">
-    </a-camera>
-
-
-    <!-- Image Target -->
-
-    <a-entity
-      mindar-image-target="
-        targetIndex: 0
-      ">
-    </a-entity>
+</div>
 
 
-  </a-scene>
+<!-- SONG -->
+
+<audio
+  id="song"
+  src="birthday.mp3"
+  preload="auto">
+</audio>
 
 
+<!-- =========================
+     MINDAR CAMERA
+     ========================= -->
 
-  <!-- =========================
-       JAVASCRIPT
-       ========================= -->
+<a-scene
+  mindar-image="
+    imageTargetSrc: ./targets.mind;
+    maxTrack: 1;
+  "
+  embedded
+  color-space="sRGB"
+  renderer="
+    colorManagement: true;
+    physicallyCorrectLights;
+  "
+  vr-mode-ui="enabled: false"
+  device-orientation-permission-ui="enabled: false"
+>
+
+  <a-camera
+    position="0 0 0"
+    look-controls="enabled: false">
+  </a-camera>
+
+
+  <a-entity
+    mindar-image-target="targetIndex: 0">
+  </a-entity>
+
+</a-scene>
+
 
 <script>
 
-const start = document.getElementById("start");
-const countdown = document.getElementById("countdown");
-const birthday = document.getElementById("birthday");
-const song = document.getElementById("song");
+
+/* =========================
+   ELEMENTS
+   ========================= */
+
+const start =
+  document.getElementById("start");
+
+const countdown =
+  document.getElementById("countdown");
+
+const birthday =
+  document.getElementById("birthday");
+
+const song =
+  document.getElementById("song");
+
 
 let surpriseStarted = false;
-let mindarStarted = false;
 
 
-/* START CAMERA WHEN BLUE SCREEN IS TAPPED */
+/* =========================
+   START BUTTON
+   ========================= */
 
-start.addEventListener("click", async function () {
-
-  console.log("Start button tapped");
-
-  start.innerHTML = `
-    <h1>📷</h1>
-    <p><strong>Opening camera...</strong></p>
-    <p>Please allow camera access.</p>
-  `;
-
-  try {
-
-    const scene = document.querySelector("a-scene");
+start.addEventListener(
+  "click",
+  function() {
 
     /*
-     * Start MindAR
+     * Hide the start screen.
+     *
+     * MindAR is already initialized
+     * by the A-Frame scene.
      */
-
-    await scene.systems["mindar-image-system"].start();
-
-    mindarStarted = true;
 
     start.style.display = "none";
 
-  } catch (error) {
-
-    console.error(error);
-
-    start.innerHTML = `
-      <h1>😢</h1>
-      <p><strong>Camera could not start</strong></p>
-      <p>Please allow camera access and refresh the page.</p>
-    `;
-
   }
+);
 
-});
 
-
-/* IMAGE RECOGNIZED */
+/* =========================
+   IMAGE TARGET
+   ========================= */
 
 const target =
   document.querySelector(
@@ -438,11 +287,18 @@ const target =
   );
 
 
+/* =========================
+   IMAGE FOUND
+   ========================= */
+
 target.addEventListener(
   "targetFound",
-  function () {
+  function() {
 
-    console.log("🎯 FTS IMAGE FOUND!");
+    console.log(
+      "🎯 FTS IMAGE FOUND!"
+    );
+
 
     if (!surpriseStarted) {
 
@@ -456,67 +312,96 @@ target.addEventListener(
 );
 
 
-/* COUNTDOWN */
+/* =========================
+   COUNTDOWN
+   ========================= */
 
 function startCountdown() {
 
-  countdown.style.display = "flex";
+
+  countdown.style.display =
+    "flex";
+
 
   let number = 10;
 
-  countdown.textContent = number;
+
+  countdown.textContent =
+    number;
 
 
-  const timer = setInterval(
-    function () {
+  const timer =
+    setInterval(
+      function() {
 
-      number--;
 
-      if (number > 0) {
+        number--;
 
-        countdown.textContent = number;
 
-      } else {
+        if (number > 0) {
 
-        clearInterval(timer);
+          countdown.textContent =
+            number;
 
-        countdown.style.display = "none";
+        }
 
-        birthday.style.display = "flex";
 
-        /*
-         * Start birthday song
-         */
+        else {
 
-        song.currentTime = 0;
+          clearInterval(timer);
 
-        song.play().catch(
-          function (error) {
 
-            console.log(
-              "Song could not play:",
-              error
-            );
+          countdown.style.display =
+            "none";
 
-          }
-        );
 
-        createConfetti();
+          birthday.style.display =
+            "flex";
 
-      }
 
-    },
-    1000
-  );
+          /*
+           * Start the song
+           */
+
+          song.currentTime = 0;
+
+
+          song.play().catch(
+            function(error) {
+
+              console.log(
+                "Song could not play:",
+                error
+              );
+
+            }
+          );
+
+
+          /*
+           * Confetti
+           */
+
+          createConfetti();
+
+        }
+
+      },
+      1000
+    );
 
 }
 
 
-/* CONFETTI */
+/* =========================
+   CONFETTI
+   ========================= */
 
 function createConfetti() {
 
+
   const emojis = [
+
     "🎉",
     "🎈",
     "🎊",
@@ -525,16 +410,24 @@ function createConfetti() {
     "🎂",
     "💙",
     "⭐"
+
   ];
 
 
-  for (let i = 0; i < 80; i++) {
+  for (
+    let i = 0;
+    i < 80;
+    i++
+  ) {
+
 
     const piece =
       document.createElement("div");
 
+
     piece.className =
       "confetti";
+
 
     piece.textContent =
       emojis[
@@ -546,18 +439,29 @@ function createConfetti() {
 
 
     piece.style.left =
-      Math.random() * 100 + "vw";
+      Math.random() *
+      100 +
+      "vw";
 
 
     piece.style.animationDelay =
-      Math.random() * 2 + "s";
+      Math.random() *
+      2 +
+      "s";
 
 
     piece.style.fontSize =
-      (20 + Math.random() * 25) + "px";
+      (
+        20 +
+        Math.random() *
+        25
+      ) +
+      "px";
 
 
-    document.body.appendChild(piece);
+    document.body.appendChild(
+      piece
+    );
 
   }
 
@@ -567,5 +471,4 @@ function createConfetti() {
 
 
 </body>
-
 </html>
