@@ -378,241 +378,192 @@
        JAVASCRIPT
        ========================= -->
 
-  <script>
+<script>
+
+const start = document.getElementById("start");
+const countdown = document.getElementById("countdown");
+const birthday = document.getElementById("birthday");
+const song = document.getElementById("song");
+
+let surpriseStarted = false;
+let mindarStarted = false;
 
 
-    const start =
-      document.getElementById("start");
+/* START CAMERA WHEN BLUE SCREEN IS TAPPED */
 
+start.addEventListener("click", async function () {
 
-    const countdown =
-      document.getElementById("countdown");
+  console.log("Start button tapped");
 
+  start.innerHTML = `
+    <h1>📷</h1>
+    <p><strong>Opening camera...</strong></p>
+    <p>Please allow camera access.</p>
+  `;
 
-    const birthday =
-      document.getElementById("birthday");
+  try {
 
-
-    const song =
-      document.getElementById("song");
-
-
-    let surpriseStarted = false;
-
-
-
-    /*
-     * START CAMERA
-     */
-
-    start.addEventListener(
-      "click",
-      function() {
-
-        start.style.display = "none";
-
-      }
-    );
-
-
+    const scene = document.querySelector("a-scene");
 
     /*
-     * FIND THE AR TARGET
+     * Start MindAR
      */
 
-    const target =
-      document.querySelector(
-        '[mindar-image-target="targetIndex: 0"]'
-      );
+    await scene.systems["mindar-image-system"].start();
+
+    mindarStarted = true;
+
+    start.style.display = "none";
+
+  } catch (error) {
+
+    console.error(error);
+
+    start.innerHTML = `
+      <h1>😢</h1>
+      <p><strong>Camera could not start</strong></p>
+      <p>Please allow camera access and refresh the page.</p>
+    `;
+
+  }
+
+});
 
 
+/* IMAGE RECOGNIZED */
 
-    /*
-     * IMAGE RECOGNIZED
-     */
-
-    target.addEventListener(
-      "targetFound",
-      function() {
-
-        console.log(
-          "🎯 IMAGE FOUND!"
-        );
+const target =
+  document.querySelector(
+    '[mindar-image-target="targetIndex: 0"]'
+  );
 
 
-        if (!surpriseStarted) {
+target.addEventListener(
+  "targetFound",
+  function () {
 
-          surpriseStarted = true;
+    console.log("🎯 FTS IMAGE FOUND!");
 
-          startCountdown();
+    if (!surpriseStarted) {
 
-        }
+      surpriseStarted = true;
 
-      }
-    );
-
-
-
-    /*
-     * COUNTDOWN
-     */
-
-    function startCountdown() {
-
-
-      countdown.style.display =
-        "flex";
-
-
-      let number = 10;
-
-
-      countdown.textContent =
-        number;
-
-
-
-      const timer =
-        setInterval(
-          function() {
-
-
-            number--;
-
-
-            if (number > 0) {
-
-              countdown.textContent =
-                number;
-
-            }
-
-
-            else {
-
-              clearInterval(timer);
-
-
-              countdown.style.display =
-                "none";
-
-
-              birthday.style.display =
-                "flex";
-
-
-              /*
-               * START SONG
-               */
-
-              song.currentTime = 0;
-
-
-              song.play().catch(
-                function(error) {
-
-                  console.log(
-                    "Audio could not play:",
-                    error
-                  );
-
-                }
-              );
-
-
-              /*
-               * CONFETTI
-               */
-
-              createConfetti();
-
-            }
-
-
-          },
-          1000
-        );
+      startCountdown();
 
     }
 
+  }
+);
 
 
-    /*
-     * CONFETTI
-     */
+/* COUNTDOWN */
 
-    function createConfetti() {
+function startCountdown() {
+
+  countdown.style.display = "flex";
+
+  let number = 10;
+
+  countdown.textContent = number;
 
 
-      const emojis = [
+  const timer = setInterval(
+    function () {
 
-        "🎉",
-        "🎈",
-        "🎊",
-        "✨",
-        "🥳",
-        "🎂",
-        "💙",
-        "⭐"
+      number--;
 
+      if (number > 0) {
+
+        countdown.textContent = number;
+
+      } else {
+
+        clearInterval(timer);
+
+        countdown.style.display = "none";
+
+        birthday.style.display = "flex";
+
+        /*
+         * Start birthday song
+         */
+
+        song.currentTime = 0;
+
+        song.play().catch(
+          function (error) {
+
+            console.log(
+              "Song could not play:",
+              error
+            );
+
+          }
+        );
+
+        createConfetti();
+
+      }
+
+    },
+    1000
+  );
+
+}
+
+
+/* CONFETTI */
+
+function createConfetti() {
+
+  const emojis = [
+    "🎉",
+    "🎈",
+    "🎊",
+    "✨",
+    "🥳",
+    "🎂",
+    "💙",
+    "⭐"
+  ];
+
+
+  for (let i = 0; i < 80; i++) {
+
+    const piece =
+      document.createElement("div");
+
+    piece.className =
+      "confetti";
+
+    piece.textContent =
+      emojis[
+        Math.floor(
+          Math.random() *
+          emojis.length
+        )
       ];
 
 
-
-      for (
-        let i = 0;
-        i < 80;
-        i++
-      ) {
+    piece.style.left =
+      Math.random() * 100 + "vw";
 
 
-        const piece =
-          document.createElement("div");
+    piece.style.animationDelay =
+      Math.random() * 2 + "s";
 
 
-        piece.className =
-          "confetti";
+    piece.style.fontSize =
+      (20 + Math.random() * 25) + "px";
 
 
-        piece.textContent =
-          emojis[
-            Math.floor(
-              Math.random() *
-              emojis.length
-            )
-          ];
+    document.body.appendChild(piece);
 
+  }
 
-        piece.style.left =
-          Math.random() *
-          100 +
-          "vw";
+}
 
-
-        piece.style.animationDelay =
-          Math.random() *
-          2 +
-          "s";
-
-
-        piece.style.fontSize =
-          (
-            20 +
-            Math.random() *
-            25
-          ) +
-          "px";
-
-
-        document.body.appendChild(
-          piece
-        );
-
-      }
-
-    }
-
-  </script>
+</script>
 
 
 </body>
