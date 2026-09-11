@@ -4,80 +4,103 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Birthday Surprise 🎂</title>
-
-  <!-- Three.js -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-
-  <!-- MindAR -->
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
+  <title>🎂 Birthday Surprise</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
+      min-height: 100vh;
       overflow: hidden;
       font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      color: white;
+    }
+
+    .screen {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 25px;
     }
 
     #start {
-      position: fixed;
-      inset: 0;
-      z-index: 10;
-      background: linear-gradient(135deg, #ff758c, #ff7eb3);
-      color: white;
-      display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
+      cursor: pointer;
+    }
+
+    #start .cake {
+      font-size: 90px;
     }
 
     #start h1 {
-      font-size: 70px;
-      margin: 10px;
+      font-size: 35px;
+      margin: 15px 0;
     }
 
     #start p {
-      font-size: 22px;
-    }
-
-    #message {
-      position: fixed;
-      inset: 0;
-      z-index: 20;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      color: white;
-      text-align: center;
-      pointer-events: none;
+      font-size: 20px;
     }
 
     #countdown {
-      font-size: 35vw;
+      display: none;
+      font-size: 45vw;
       font-weight: bold;
-      text-shadow: 0 5px 20px rgba(0,0,0,0.4);
+      text-shadow: 0 8px 25px rgba(0,0,0,.25);
     }
 
     #birthday {
       display: none;
+      flex-direction: column;
+      animation: pop .8s ease;
     }
 
     #birthday h1 {
-      font-size: 11vw;
+      font-size: 12vw;
       margin: 0;
+      line-height: 1.1;
     }
 
     #birthday p {
-      font-size: 5vw;
+      font-size: 6vw;
+    }
+
+    #photo {
+      display: none;
+      width: min(70vw, 350px);
+      max-height: 35vh;
+      object-fit: contain;
+      border-radius: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.3);
     }
 
     .confetti {
       position: fixed;
-      top: -30px;
+      top: -40px;
+      z-index: 100;
       font-size: 30px;
-      animation: fall 3s linear forwards;
+      pointer-events: none;
+      animation: fall 4s linear forwards;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(0);
+      }
+
+      70% {
+        transform: scale(1.15);
+      }
+
+      100% {
+        transform: scale(1);
+      }
     }
 
     @keyframes fall {
@@ -90,108 +113,64 @@
 
 <body>
 
-  <div id="start">
-    <h1>🎂</h1>
-    <p><strong>Birthday Surprise</strong></p>
-    <p>Tap to open the camera 👆</p>
-  </div>
+  <!-- START SCREEN -->
 
-  <div id="message">
+  <div id="start" class="screen" onclick="startSurprise()">
 
-    <div id="countdown">10</div>
+    <div class="cake">🎂</div>
 
-    <div id="birthday">
-      <h1>🎉 HAPPY BIRTHDAY! 🎉</h1>
-      <p>🎂 Have an amazing day! 🎈</p>
-    </div>
+    <h1>Someone has a surprise for you...</h1>
+
+    <p>👆 Tap anywhere to continue</p>
 
   </div>
+
+
+  <!-- COUNTDOWN -->
+
+  <div id="countdown" class="screen">
+    10
+  </div>
+
+
+  <!-- BIRTHDAY -->
+
+  <div id="birthday" class="screen">
+
+    <img id="photo" src="fts.jpg">
+
+    <h1>🎉 HAPPY BIRTHDAY! 🎉</h1>
+
+    <p>🥳 Have an amazing day! 🎂</p>
+
+  </div>
+
+
+  <!-- YOUR SONG -->
 
   <audio id="song" src="birthday.mp3"></audio>
 
+
   <script>
 
-    const startScreen = document.getElementById("start");
-    const message = document.getElementById("message");
-    const countdown = document.getElementById("countdown");
-    const birthday = document.getElementById("birthday");
-    const song = document.getElementById("song");
+    function startSurprise() {
 
-    let surpriseStarted = false;
+      const start = document.getElementById("start");
+      const countdown = document.getElementById("countdown");
+      const birthday = document.getElementById("birthday");
+      const photo = document.getElementById("photo");
+      const song = document.getElementById("song");
 
-    startScreen.addEventListener("click", async function() {
+      // Hide start screen
+      start.style.display = "none";
 
-      startScreen.style.display = "none";
+      // Show countdown
+      countdown.style.display = "flex";
 
-      try {
-
-        const mindarThree = new MindARThree({
-          container: document.body,
-          imageTargetSrc: "./targets.mind",
-          maxTrack: 1
-        });
-
-        const renderer = mindarThree.renderer;
-        const scene = mindarThree.scene;
-        const camera = mindarThree.camera;
-
-        const anchor = mindarThree.addAnchor(0);
-
-        anchor.onTargetFound = function() {
-
-          if (!surpriseStarted) {
-
-            surpriseStarted = true;
-
-            startCountdown();
-
-          }
-
-        };
-
-        anchor.onTargetLost = function() {
-          console.log("Target lost");
-        };
-
-        await mindarThree.start();
-
-        renderer.setAnimationLoop(function() {
-
-          renderer.render(scene, camera);
-
-        });
-
-      } catch (error) {
-
-        console.error(error);
-
-        document.body.innerHTML = `
-          <div style="
-            color:white;
-            background:#222;
-            min-height:100vh;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            text-align:center;
-            font-family:Arial;
-            padding:30px;
-          ">
-            <div>
-              <h1>Camera couldn't start 😭</h1>
-              <p>Please allow camera access and reload.</p>
-            </div>
-          </div>
-        `;
-
-      }
-
-    });
-
-
-    function startCountdown() {
-
-      message.style.display = "flex";
+      // Start music after the user taps
+      song.play().catch(function(error) {
+        console.log("Music error:", error);
+      });
 
       let number = 10;
 
@@ -209,12 +188,16 @@
 
           clearInterval(timer);
 
+          // Hide countdown
           countdown.style.display = "none";
 
-          birthday.style.display = "block";
+          // Show birthday
+          birthday.style.display = "flex";
 
-          song.play();
+          // Show photo
+          photo.style.display = "block";
 
+          // Confetti
           createConfetti();
 
         }
@@ -229,28 +212,32 @@
       const emojis = [
         "🎉",
         "🎈",
-        "✨",
         "🎊",
+        "✨",
         "🥳",
-        "🎂"
+        "🎂",
+        "💖"
       ];
 
-      for (let i = 0; i < 60; i++) {
+      for (let i = 0; i < 80; i++) {
 
-        const confetti = document.createElement("div");
+        const piece = document.createElement("div");
 
-        confetti.className = "confetti";
+        piece.className = "confetti";
 
-        confetti.textContent =
+        piece.textContent =
           emojis[Math.floor(Math.random() * emojis.length)];
 
-        confetti.style.left =
+        piece.style.left =
           Math.random() * 100 + "vw";
 
-        confetti.style.animationDelay =
+        piece.style.animationDelay =
           Math.random() * 2 + "s";
 
-        document.body.appendChild(confetti);
+        piece.style.fontSize =
+          (20 + Math.random() * 25) + "px";
+
+        document.body.appendChild(piece);
 
       }
 
