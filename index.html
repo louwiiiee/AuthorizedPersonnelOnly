@@ -6,8 +6,10 @@
 
   <title>Birthday Surprise 🎂</title>
 
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
   <!-- MindAR -->
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image.prod.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js"></script>
 
   <style>
@@ -28,7 +30,6 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      cursor: pointer;
     }
 
     #start h1 {
@@ -51,7 +52,6 @@
       color: white;
       text-align: center;
       pointer-events: none;
-      background: rgba(0,0,0,0.15);
     }
 
     #countdown {
@@ -90,14 +90,12 @@
 
 <body>
 
-  <!-- User must tap first so the browser allows audio -->
   <div id="start">
     <h1>🎂</h1>
     <p><strong>Birthday Surprise</strong></p>
     <p>Tap to open the camera 👆</p>
   </div>
 
-  <!-- Countdown / birthday message -->
   <div id="message">
 
     <div id="countdown">10</div>
@@ -111,7 +109,7 @@
 
   <audio id="song" src="birthday.mp3"></audio>
 
-  <script type="module">
+  <script>
 
     const startScreen = document.getElementById("start");
     const message = document.getElementById("message");
@@ -121,43 +119,72 @@
 
     let surpriseStarted = false;
 
-    startScreen.addEventListener("click", async () => {
+    startScreen.addEventListener("click", async function() {
 
       startScreen.style.display = "none";
 
-      // Start camera
-      const mindarThree = new MindAR.IMAGE.MindARThree({
-        container: document.body,
+      try {
 
-        imageTargetSrc: "./targets.mind",
+        const mindarThree = new MindARThree({
+          container: document.body,
+          imageTargetSrc: "./targets.mind",
+          maxTrack: 1
+        });
 
-        maxTrack: 1
-      });
+        const renderer = mindarThree.renderer;
+        const scene = mindarThree.scene;
+        const camera = mindarThree.camera;
 
-      const { renderer, scene, camera } = mindarThree;
+        const anchor = mindarThree.addAnchor(0);
 
-      // Create an invisible AR anchor
-      const anchor = mindarThree.addAnchor(0);
+        anchor.onTargetFound = function() {
 
-      anchor.onTargetFound = () => {
+          if (!surpriseStarted) {
 
-        if (!surpriseStarted) {
+            surpriseStarted = true;
 
-          surpriseStarted = true;
+            startCountdown();
 
-          startCountdown();
+          }
 
-        }
+        };
 
-      };
+        anchor.onTargetLost = function() {
+          console.log("Target lost");
+        };
 
-      await mindarThree.start();
+        await mindarThree.start();
 
-      renderer.setAnimationLoop(() => {
+        renderer.setAnimationLoop(function() {
 
-        renderer.render(scene, camera);
+          renderer.render(scene, camera);
 
-      });
+        });
+
+      } catch (error) {
+
+        console.error(error);
+
+        document.body.innerHTML = `
+          <div style="
+            color:white;
+            background:#222;
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            text-align:center;
+            font-family:Arial;
+            padding:30px;
+          ">
+            <div>
+              <h1>Camera couldn't start 😭</h1>
+              <p>Please allow camera access and reload.</p>
+            </div>
+          </div>
+        `;
+
+      }
 
     });
 
@@ -170,7 +197,7 @@
 
       countdown.textContent = number;
 
-      const timer = setInterval(() => {
+      const timer = setInterval(function() {
 
         number--;
 
@@ -186,26 +213,13 @@
 
           birthday.style.display = "block";
 
-          playSong();
+          song.play();
 
           createConfetti();
 
         }
 
       }, 1000);
-
-    }
-
-
-    function playSong() {
-
-      song.currentTime = 0;
-
-      song.play().catch(error => {
-
-        console.log("Audio could not start:", error);
-
-      });
 
     }
 
