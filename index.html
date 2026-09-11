@@ -4,240 +4,609 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>🎂 Birthday Surprise</title>
+  <title>Birthday Surprise 🎂</title>
+
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+
+  <!-- MindAR -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 
   <style>
+
     * {
       box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      min-height: 100vh;
       overflow: hidden;
+      background: #061a40;
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #ff758c, #ff7eb3);
-      color: white;
     }
 
-    .screen {
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 25px;
-    }
+
+    /* =========================
+       START SCREEN
+       ========================= */
 
     #start {
+      position: fixed;
+      z-index: 9999;
+      inset: 0;
+
+      background:
+        linear-gradient(
+          135deg,
+          #061a40,
+          #0077b6
+        );
+
+      color: white;
+
+      display: flex;
       flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      text-align: center;
+
       cursor: pointer;
     }
 
-    #start .cake {
-      font-size: 90px;
-    }
 
     #start h1 {
-      font-size: 35px;
-      margin: 15px 0;
+      font-size: 70px;
+      margin: 0 0 20px 0;
     }
+
 
     #start p {
-      font-size: 20px;
+      font-size: 22px;
+      margin: 8px;
     }
+
+
+    #start .hint {
+      margin-top: 30px;
+      padding: 15px 25px;
+
+      border: 2px solid rgba(255,255,255,0.6);
+      border-radius: 50px;
+
+      background: rgba(255,255,255,0.12);
+
+      font-size: 18px;
+    }
+
+
+    /* =========================
+       COUNTDOWN
+       ========================= */
 
     #countdown {
+
+      position: fixed;
+
+      z-index: 5000;
+
+      inset: 0;
+
       display: none;
+
+      justify-content: center;
+      align-items: center;
+
+      color: white;
+
       font-size: 45vw;
+
       font-weight: bold;
-      text-shadow: 0 8px 25px rgba(0,0,0,.25);
+
+      text-shadow:
+        0 5px 20px rgba(0,0,0,0.5);
+
+      pointer-events: none;
+
+      background:
+        rgba(0, 60, 130, 0.35);
     }
+
+
+    /* =========================
+       BIRTHDAY SCREEN
+       ========================= */
 
     #birthday {
+
+      position: fixed;
+
+      z-index: 5000;
+
+      inset: 0;
+
       display: none;
+
+      justify-content: center;
+      align-items: center;
+
       flex-direction: column;
-      animation: pop .8s ease;
+
+      color: white;
+
+      text-align: center;
+
+      padding: 20px;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(6,26,64,0.90),
+          rgba(0,119,182,0.90)
+        );
+
+      animation: birthdayPop 0.8s ease;
     }
+
+
+    #birthday img {
+
+      width: 60vw;
+
+      max-width: 350px;
+
+      max-height: 35vh;
+
+      object-fit: contain;
+
+      border-radius: 20px;
+
+      margin-bottom: 20px;
+
+      box-shadow:
+        0 10px 40px rgba(0,0,0,0.4);
+    }
+
 
     #birthday h1 {
-      font-size: 12vw;
-      margin: 0;
+
+      font-size: 11vw;
+
       line-height: 1.1;
+
+      margin: 0;
     }
+
 
     #birthday p {
-      font-size: 6vw;
+
+      font-size: 5vw;
+
+      margin-top: 20px;
     }
 
-    #photo {
-      display: none;
-      width: min(70vw, 350px);
-      max-height: 35vh;
-      object-fit: contain;
-      border-radius: 20px;
-      margin-bottom: 25px;
-      box-shadow: 0 10px 40px rgba(0,0,0,.3);
-    }
+
+    /* =========================
+       CONFETTI
+       ========================= */
 
     .confetti {
+
       position: fixed;
+
       top: -40px;
-      z-index: 100;
+
+      z-index: 10000;
+
       font-size: 30px;
+
       pointer-events: none;
-      animation: fall 4s linear forwards;
+
+      animation:
+        fall 4s linear forwards;
     }
 
-    @keyframes pop {
+
+    /* =========================
+       ANIMATIONS
+       ========================= */
+
+    @keyframes birthdayPop {
+
       0% {
         transform: scale(0);
+        opacity: 0;
       }
 
       70% {
-        transform: scale(1.15);
+        transform: scale(1.08);
+        opacity: 1;
       }
 
       100% {
         transform: scale(1);
+        opacity: 1;
       }
+
     }
 
+
     @keyframes fall {
-      to {
-        transform: translateY(110vh) rotate(720deg);
+
+      from {
+        transform:
+          translateY(0)
+          rotate(0deg);
       }
+
+      to {
+        transform:
+          translateY(110vh)
+          rotate(720deg);
+      }
+
     }
+
   </style>
+
 </head>
+
 
 <body>
 
-  <!-- START SCREEN -->
 
-  <div id="start" class="screen" onclick="startSurprise()">
+  <!-- =========================
+       START SCREEN
+       ========================= -->
 
-    <div class="cake">🎂</div>
+  <div id="start">
 
-    <h1>Someone has a surprise for you...</h1>
+    <h1>🎂</h1>
 
-    <p>👆 Tap anywhere to continue</p>
+    <p>
+      <strong>Birthday Surprise</strong>
+    </p>
+
+    <p>
+      Something special is waiting...
+    </p>
+
+    <div class="hint">
+      👆 Tap to open the camera
+    </div>
 
   </div>
 
 
-  <!-- COUNTDOWN -->
 
-  <div id="countdown" class="screen">
+  <!-- =========================
+       COUNTDOWN
+       ========================= -->
+
+  <div id="countdown">
+
     10
-  </div>
-
-
-  <!-- BIRTHDAY -->
-
-  <div id="birthday" class="screen">
-
-    <img id="photo" src="fts.jpg">
-
-    <h1>🎉 HAPPY BIRTHDAY! 🎉</h1>
-
-    <p>🥳 Have an amazing day! 🎂</p>
 
   </div>
 
 
-  <!-- YOUR SONG -->
 
-  <audio id="song" src="birthday.mp3"></audio>
+  <!-- =========================
+       BIRTHDAY MESSAGE
+       ========================= -->
 
+  <div id="birthday">
+
+    <img
+      src="fts.jpg"
+      alt="Birthday photo"
+    >
+
+    <h1>
+      🎉 HAPPY BIRTHDAY! 🎉
+    </h1>
+
+    <p>
+      🎂 Have an amazing day! 🎈
+    </p>
+
+  </div>
+
+
+
+  <!-- =========================
+       BIRTHDAY SONG
+       ========================= -->
+
+  <audio
+    id="song"
+    src="birthday.mp3"
+    preload="auto">
+  </audio>
+
+
+
+  <!-- =========================
+       AR CAMERA
+       ========================= -->
+
+  <a-scene
+
+    mindar-image="
+      imageTargetSrc: ./targets.mind;
+      maxTrack: 1;
+    "
+
+    color-space="sRGB"
+
+    renderer="
+      colorManagement: true;
+      physicallyCorrectLights;
+    "
+
+    vr-mode-ui="enabled: false"
+
+    device-orientation-permission-ui="
+      enabled: false
+    "
+
+  >
+
+
+    <!-- Camera -->
+
+    <a-camera
+      position="0 0 0"
+      look-controls="enabled: false">
+    </a-camera>
+
+
+    <!-- Image Target -->
+
+    <a-entity
+      mindar-image-target="
+        targetIndex: 0
+      ">
+    </a-entity>
+
+
+  </a-scene>
+
+
+
+  <!-- =========================
+       JAVASCRIPT
+       ========================= -->
 
   <script>
 
-    function startSurprise() {
 
-      const start = document.getElementById("start");
-      const countdown = document.getElementById("countdown");
-      const birthday = document.getElementById("birthday");
-      const photo = document.getElementById("photo");
-      const song = document.getElementById("song");
+    const start =
+      document.getElementById("start");
 
-      // Hide start screen
-      start.style.display = "none";
 
-      // Show countdown
-      countdown.style.display = "flex";
+    const countdown =
+      document.getElementById("countdown");
 
-      // Start music after the user taps
-      song.play().catch(function(error) {
-        console.log("Music error:", error);
-      });
 
-      let number = 10;
+    const birthday =
+      document.getElementById("birthday");
 
-      countdown.textContent = number;
 
-      const timer = setInterval(function() {
+    const song =
+      document.getElementById("song");
 
-        number--;
 
-        if (number > 0) {
+    let surpriseStarted = false;
 
-          countdown.textContent = number;
 
-        } else {
 
-          clearInterval(timer);
+    /*
+     * START CAMERA
+     */
 
-          // Hide countdown
-          countdown.style.display = "none";
+    start.addEventListener(
+      "click",
+      function() {
 
-          // Show birthday
-          birthday.style.display = "flex";
+        start.style.display = "none";
 
-          // Show photo
-          photo.style.display = "block";
+      }
+    );
 
-          // Confetti
-          createConfetti();
+
+
+    /*
+     * FIND THE AR TARGET
+     */
+
+    const target =
+      document.querySelector(
+        '[mindar-image-target="targetIndex: 0"]'
+      );
+
+
+
+    /*
+     * IMAGE RECOGNIZED
+     */
+
+    target.addEventListener(
+      "targetFound",
+      function() {
+
+        console.log(
+          "🎯 IMAGE FOUND!"
+        );
+
+
+        if (!surpriseStarted) {
+
+          surpriseStarted = true;
+
+          startCountdown();
 
         }
 
-      }, 1000);
+      }
+    );
+
+
+
+    /*
+     * COUNTDOWN
+     */
+
+    function startCountdown() {
+
+
+      countdown.style.display =
+        "flex";
+
+
+      let number = 10;
+
+
+      countdown.textContent =
+        number;
+
+
+
+      const timer =
+        setInterval(
+          function() {
+
+
+            number--;
+
+
+            if (number > 0) {
+
+              countdown.textContent =
+                number;
+
+            }
+
+
+            else {
+
+              clearInterval(timer);
+
+
+              countdown.style.display =
+                "none";
+
+
+              birthday.style.display =
+                "flex";
+
+
+              /*
+               * START SONG
+               */
+
+              song.currentTime = 0;
+
+
+              song.play().catch(
+                function(error) {
+
+                  console.log(
+                    "Audio could not play:",
+                    error
+                  );
+
+                }
+              );
+
+
+              /*
+               * CONFETTI
+               */
+
+              createConfetti();
+
+            }
+
+
+          },
+          1000
+        );
 
     }
 
 
+
+    /*
+     * CONFETTI
+     */
+
     function createConfetti() {
 
+
       const emojis = [
+
         "🎉",
         "🎈",
         "🎊",
         "✨",
         "🥳",
         "🎂",
-        "💖"
+        "💙",
+        "⭐"
+
       ];
 
-      for (let i = 0; i < 80; i++) {
 
-        const piece = document.createElement("div");
 
-        piece.className = "confetti";
+      for (
+        let i = 0;
+        i < 80;
+        i++
+      ) {
+
+
+        const piece =
+          document.createElement("div");
+
+
+        piece.className =
+          "confetti";
+
 
         piece.textContent =
-          emojis[Math.floor(Math.random() * emojis.length)];
+          emojis[
+            Math.floor(
+              Math.random() *
+              emojis.length
+            )
+          ];
+
 
         piece.style.left =
-          Math.random() * 100 + "vw";
+          Math.random() *
+          100 +
+          "vw";
+
 
         piece.style.animationDelay =
-          Math.random() * 2 + "s";
+          Math.random() *
+          2 +
+          "s";
+
 
         piece.style.fontSize =
-          (20 + Math.random() * 25) + "px";
+          (
+            20 +
+            Math.random() *
+            25
+          ) +
+          "px";
 
-        document.body.appendChild(piece);
+
+        document.body.appendChild(
+          piece
+        );
 
       }
 
@@ -245,5 +614,7 @@
 
   </script>
 
+
 </body>
+
 </html>
